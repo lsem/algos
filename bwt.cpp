@@ -41,6 +41,71 @@ string inverse_bwt(string s) {
   return *it;
 }
 
+// Performs inversing BWT using First-Last property. Works only for ACTG symbols.
+string fast_inverse_bwt(string bwt) {
+  // following first-last rule.
+
+  int N = bwt.size();
+  string last_column = bwt;
+  string first_column = std::move(bwt);
+
+  // We know that first column contains the same symbols as last column of BWT
+  // matrix (which is BWT itself) just sorted.
+  std::sort(first_column.begin(), first_column.end());
+
+  string ibwt(N, 0);
+
+  // For last column, we just need to know the number of occurence at given position,
+  // so we can precompute it in O(N) time so then it will be O(1) operation.
+  vector<unsigned> last_column_numbers(N, 0);
+  int a_cnt = 0, c_cnt = 0, t_cnt = 0, g_cnt = 0;
+  for (size_t i = 0; i < N; ++i) {
+    switch (last_column[i]) {
+    case 'A':
+      last_column_numbers[i] = a_cnt++;
+      break;
+    case 'C':
+      last_column_numbers[i] = c_cnt++;
+      break;
+    case 'T':
+      last_column_numbers[i] = t_cnt++;
+      break;
+    case 'G':
+      last_column_numbers[i] = g_cnt++;
+      break;
+    }
+  }
+
+  auto last_col_symbol_number = [&last_column_numbers](size_t pos) {
+    return last_column_numbers[pos];
+  };
+
+  // e.g. find 20-th occurence of symbol 'T'.
+  // Assuming we know that there will be n-tn occurence. Just find beginning of series of this symbol
+  // with built-in lower_bound algorithm and then return n-th occurence.
+  auto first_col_nth_symbol = [&first_column](int symbol, size_t n) -> size_t {
+    auto lb =
+        std::lower_bound(first_column.begin(), first_column.end(), symbol);
+    return lb - first_column.begin() + n;
+  };
+
+  // Do the job.
+  size_t row_index = 0;
+  ibwt[ibwt.size() - 1] = first_column[row_index];
+  for (int i = 1; i < N; ++i) {
+    auto x = last_column[row_index];
+    ibwt[N - 1 - i] = x;
+    // Get number of symbol at position row_index. 
+    auto snum = last_col_symbol_number(row_index);
+    // Get position of snum's symbol in first columnt. 
+    size_t pos = first_col_nth_symbol(x, snum);
+    // And this position is our new starting point.
+    row_index = pos;
+  }
+
+  return ibwt;
+}
+
 int main() {
 
   string text =

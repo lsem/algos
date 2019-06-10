@@ -163,11 +163,14 @@ void BW_match_all_patterns(string bwt, const vector<string>& patterns) {
   vector<vector<int>> count(4, std::vector<int>(N + 1, 0));
   {
     int a = 0, c = 0, t = 0, g = 0;
-    for (int i = 0; i < N; ++i) {
+    for (int i = 0; i < N + 1; ++i) {
       count[SIdx('A')][i] = a;
       count[SIdx('C')][i] = c;
       count[SIdx('T')][i] = t;
       count[SIdx('G')][i] = g;
+      if (i == N) {
+        break;
+      }
       switch (last_column[i]) {
       case 'A': a++; break;
       case 'C': c++; break;
@@ -175,10 +178,6 @@ void BW_match_all_patterns(string bwt, const vector<string>& patterns) {
       case 'T': t++; break;
       }
     }
-    count[SIdx('A')][N] = a;
-    count[SIdx('C')][N] = c;
-    count[SIdx('T')][N] = t;
-    count[SIdx('G')][N] = g;
   }
 
   //

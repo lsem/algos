@@ -106,6 +106,92 @@ string fast_inverse_bwt(string bwt) {
   return ibwt;
 }
 
+unsigned SIdx(char c) {
+  switch (c) {
+  case 'A': return 0;
+  case 'C': return 1;
+  case 'T': return 2;
+  case 'G': return 3;
+  }
+  return (unsigned)(-1);
+}
+
+// Forward declaration
+unsigned BW_matching(const string &first_column, const string &last_column,
+                     StringSlice pattern, const vector<size_t> &first_occurence,
+                     const vector<vector<int>> &count);
+
+void BW_match_all_patterns(string bwt, const vector<string>& patterns) {
+  unsigned N = bwt.length();
+  string first_column = bwt;
+  string last_column = std::move(bwt);
+  std::sort(first_column.begin(), first_column.end());
+
+  //
+  // build count array, one vector per symbol (ACTG)
+  //
+  vector<vector<int>> count(4, std::vector<int>(N + 1, 0));
+  {
+    int a = 0, c = 0, t = 0, g = 0;
+    for (int i = 0; i < N; ++i) {
+      count[SIdx('A')][i] = a;
+      count[SIdx('C')][i] = c;
+      count[SIdx('T')][i] = t;
+      count[SIdx('G')][i] = g;
+      switch (last_column[i]) {
+      case 'A': a++; break;
+      case 'C': c++; break;
+      case 'G': g++; break;
+      case 'T': t++; break;
+      }
+    }
+    count[SIdx('A')][N] = a;
+    count[SIdx('C')][N] = c;
+    count[SIdx('T')][N] = t;
+    count[SIdx('G')][N] = g;
+  }
+
+  //
+  // Prapre FirstOccurence, which is basically just lower bounds for each
+  // symbol.
+  //
+  vector<size_t> first_occurence(4, {});
+  for (char c : {'A', 'C', 'T', 'G'}) {
+    first_occurence[SIdx(c)] =
+        std::lower_bound(first_column.begin(), first_column.end(), c) -
+        first_column.begin();
+  }
+
+  string sep = "";
+  for (auto &p : patterns) {
+    int r = BW_matching(first_column, last_column, StringSlice(p),
+                        first_occurence, count);
+    printf("%s%d", sep.c_str(), r);
+    sep = " ";
+  }
+  printf("\n");
+}
+
+// Match pattern in BWM of string.
+unsigned BW_matching(const string &first_column, const string &last_column,
+                     StringSlice pattern, const vector<size_t> &first_occurence,
+                     const vector<vector<int>> &count) {
+  unsigned top = 0, bottom = last_column.length() - 1;
+  while (top <= bottom) {
+    if (!pattern.is_empty()) {
+      char symbol = pattern.last_symbol();
+      pattern.remove_suffix(1);
+      top = first_occurence[SIdx(symbol)] + count[SIdx(symbol)][top];
+      bottom =
+          first_occurence[SIdx(symbol)] + count[SIdx(symbol)][bottom + 1] - 1;
+    } else {
+      return bottom - top + 1;
+    }
+  }
+  return 0; // did not converge
+}
+
+
 int main() {
 
   string text =

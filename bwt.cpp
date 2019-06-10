@@ -106,6 +106,35 @@ string fast_inverse_bwt(string bwt) {
   return ibwt;
 }
 
+class StringSlice {
+public:
+  StringSlice(const string &s) : buffer(s), start(0), length(buffer.length()) {}
+  StringSlice(const std::string &s, size_t start)
+      : buffer(s), start(start), length(0) {}
+  StringSlice(const std::string &s, size_t start, size_t length)
+      : buffer(s), start(start), length(length) {}
+
+  bool is_empty() { return this->start == this->length; }
+
+  void remove_prefix(int n) { this->start += n; }
+  void remove_suffix(int n) { this->length -= n; }
+
+  char last_symbol() const { return this->buffer[this->length - 1]; }
+
+  char operator[](size_t index) const { return buffer[start + index]; }
+
+  void print() const {
+    for (int i = start; i < length; ++i) {
+      putchar(buffer[i]);
+    }
+  }
+
+private:
+  const string &buffer;
+  size_t start, length;
+};
+
+
 unsigned SIdx(char c) {
   switch (c) {
   case 'A': return 0;
@@ -115,6 +144,7 @@ unsigned SIdx(char c) {
   }
   return (unsigned)(-1);
 }
+
 
 // Forward declaration
 unsigned BW_matching(const string &first_column, const string &last_column,

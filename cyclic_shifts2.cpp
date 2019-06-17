@@ -6,7 +6,7 @@
 
 using namespace std;
 
-vector<string> generate_syclic_shifts(string s) {
+auto generate_syclic_shifts(string s) {
   vector<string> result;
   int N = s.length();
   for (int i = 0; i < N; ++i) {

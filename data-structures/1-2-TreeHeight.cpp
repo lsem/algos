@@ -12,8 +12,8 @@
 using namespace std;
 
 struct Node {
-	int number;
-	vector<Node*> children;
+    int number;
+    vector<Node*> children;
 };
 
 
@@ -25,49 +25,49 @@ struct Node {
 // It is guaranteed that the input represents a tree.
 
 Node* create_tree(vector<int> coded_nodes) {
-	Node* root = nullptr;
+    Node* root = nullptr;
 
-	vector<Node*> nodes(coded_nodes.size());
-	for (int i = 0; i < coded_nodes.size(); ++i) {
-		nodes[i] = new Node();
-	}
+    vector<Node*> nodes(coded_nodes.size());
+    for (int i = 0; i < coded_nodes.size(); ++i) {
+        nodes[i] = new Node();
+    }
 
-	for (int i = 0; i < coded_nodes.size(); ++i) {
-		if (coded_nodes[i] == -1) {
-			root = nodes[i];
-		} else {
-			nodes[coded_nodes[i]]->children.emplace_back(nodes[i]);
-		}
-	}
-	return root;
+    for (int i = 0; i < coded_nodes.size(); ++i) {
+        if (coded_nodes[i] == -1) {
+            root = nodes[i];
+        } else {
+            nodes[coded_nodes[i]]->children.emplace_back(nodes[i]);
+        }
+    }
+    return root;
 }
 
 int tree_height(Node* root) {
-	if (root == nullptr) {
-		return 0;
-	}
-	if (root->children.empty()) {
-		return 1;
-	}
-	vector<uint> children_heights(root->children.size());
-	for (uint i = 0; i < root->children.size(); ++i) {
-		children_heights[i] = tree_height(root->children[i]);
-	}
-	return 1 + *std::max_element(children_heights.begin(), children_heights.end());
+    if (root == nullptr) {
+        return 0;
+    }
+    if (root->children.empty()) {
+        return 1;
+    }
+    vector<uint> children_heights(root->children.size());
+    for (uint i = 0; i < root->children.size(); ++i) {
+        children_heights[i] = tree_height(root->children[i]);
+    }
+    return 1 + *std::max_element(children_heights.begin(), children_heights.end());
 }
 
 
 int main() {
-	int n;
-	cin >> n;
+    int n;
+    cin >> n;
 
-	vector<int> nodes(n);
-	for (auto &n : nodes) {
-		cin >> n;
-	}
+    vector<int> nodes(n);
+    for (auto &n : nodes) {
+        cin >> n;
+    }
 
-	auto tree_root = create_tree(std::move(nodes));
+    auto tree_root = create_tree(std::move(nodes));
 
-	cout << tree_height(tree_root) << endl;
+    cout << tree_height(tree_root) << endl;
 
 }

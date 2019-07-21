@@ -24,30 +24,21 @@ struct Node {
 // It is guaranteed that there is exactly one root. 
 // It is guaranteed that the input represents a tree.
 
-Node* create_tree(vector<int> nodes) {
+Node* create_tree(vector<int> coded_nodes) {
 	Node* root = nullptr;
-	map<int, Node*> nodes_map;
 
-	auto get_or_create_node = [&nodes_map](int n) {
-		if (nodes_map.find(n) == nodes_map.end()) {
-			auto new_node = new Node{n, {}};	
-			nodes_map[n] = new_node;
-			return new_node;
-		} else {
-			return nodes_map[n];
-		}		
-	};
-
-	for (uint i = 0; i < nodes.size(); ++i) {
-		Node *ith_node = get_or_create_node(i);
-		if (nodes[i] == -1) {
-			root = ith_node;
-		} else {
-			Node *ith_node_parent = get_or_create_node(nodes[i]);
-			ith_node_parent->children.emplace_back(ith_node);
-		}
+	vector<Node*> nodes(coded_nodes.size());
+	for (int i = 0; i < coded_nodes.size(); ++i) {
+		nodes[i] = new Node();
 	}
 
+	for (int i = 0; i < coded_nodes.size(); ++i) {
+		if (coded_nodes[i] == -1) {
+			root = nodes[i];
+		} else {
+			nodes[coded_nodes[i]]->children.emplace_back(nodes[i]);
+		}
+	}
 	return root;
 }
 

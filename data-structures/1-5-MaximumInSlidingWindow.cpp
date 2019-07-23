@@ -13,7 +13,7 @@
 using namespace std;
 
 struct FastStack {
-  FastStack(size_t size_hint) : items() { items.reserve(size_hint); }
+  FastStack(size_t size_hint) : items() { this->items.reserve(size_hint); }
 
   void push(uint x) { this->items.push_back(x); }
 
@@ -21,7 +21,7 @@ struct FastStack {
 
   uint top() const { return this->items[this->items.size() - 1]; }
 
-  bool empty() const { return items.empty(); }
+  bool empty() const { return this->items.empty(); }
 
   vector<uint> items;
 };
@@ -31,24 +31,24 @@ struct StackWithMax {
       : items_stack(size_hint), max_stack(size_hint) {}
 
   void push(uint x) {
-    items_stack.push(x);
-    if (max_stack.empty() || max_stack.top() <= x) {
-      max_stack.push(x);  // new max
+    this->items_stack.push(x);
+    if (this->max_stack.empty() || this->max_stack.top() <= x) {
+      this->max_stack.push(x);  // new max
     }
   }
 
   void pop() {
-    if (items_stack.top() == max_stack.top()) {
-      max_stack.pop();
+    if (this->items_stack.top() == this->max_stack.top()) {
+      this->max_stack.pop();
     }
-    items_stack.pop();
+    this->items_stack.pop();
   }
 
-  uint top() const { return items_stack.top(); }
+  uint top() const { return this->items_stack.top(); }
 
-  uint max() const { return max_stack.top(); }
+  uint max() const { return this->max_stack.top(); }
 
-  bool empty() const { return items_stack.empty(); }
+  bool empty() const { return this->items_stack.empty(); }
 
   FastStack items_stack, max_stack;
 };
@@ -56,9 +56,9 @@ struct StackWithMax {
 struct QueueWithMax {
   QueueWithMax(size_t size_hint) : main(size_hint), aux(size_hint) {}
 
-  void f_enqueue(uint x) { this->main.push(x); }
+  void enqueue(uint x) { this->main.push(x); }
 
-  uint f_dequeue() {
+  uint dequeue() {
     if (this->aux.empty()) {
       while (!this->main.empty()) {
         this->aux.push(this->main.top());
@@ -96,13 +96,13 @@ vector<uint> max_in_sliding_window(vector<uint> nums, uint size) {
   }
 
   for (uint i = 0; i < nums.size(); ++i) {
-    queue.f_enqueue(nums[i]);
+    queue.enqueue(nums[i]);
 
     if (i == size - 1) {
       // at this moment we need to start to yield max
       maxs.push_back(queue.max());
     } else if (i >= size) {
-      queue.f_dequeue();
+      queue.dequeue();
       maxs.push_back(queue.max());
     }
   }

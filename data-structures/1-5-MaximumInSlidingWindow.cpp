@@ -82,8 +82,7 @@ struct QueueWithMax {
     }
   }
 
-  StackWithMax main, aux;  // aux stack could be temp but it is going to be
-                           // reused so memory footprint will be better.
+  StackWithMax main, aux;
 };
 
 vector<uint> max_in_sliding_window(vector<uint> nums, uint size) {

@@ -90,10 +90,6 @@ vector<uint> max_in_sliding_window(vector<uint> nums, uint size) {
 
   QueueWithMax queue(size);
 
-  if (nums.size() == 1) {
-    return {nums[0]};
-  }
-
   for (uint i = 0; i < nums.size(); ++i) {
     queue.enqueue(nums[i]);
 

@@ -1,5 +1,5 @@
 //
-// Max-flow, Assigning Crew to Flights, Bipartite Matching
+// Max-flow, Assigning crew to flights.
 // (c) Libomyr Semkiv, 2020
 //
 // Task:

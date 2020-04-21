@@ -1,5 +1,5 @@
 //
-// Max-flow
+// Max-flow, Evacuating People.
 // (c) Libomyr Semkiv, 2020
 //
 #include <algorithm>

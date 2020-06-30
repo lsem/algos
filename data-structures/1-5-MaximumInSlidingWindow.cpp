@@ -17,9 +17,9 @@ struct FastStack {
 
   void push(uint x) { this->items.push_back(x); }
 
-  void pop() { this->items.resize(this->items.size() - 1); }
+  void pop() { this->items.pop_back(); }
 
-  uint top() const { return this->items[this->items.size() - 1]; }
+  uint top() const { return this->items.back(); }
 
   bool empty() const { return this->items.empty(); }
 
@@ -92,13 +92,11 @@ vector<uint> max_in_sliding_window(vector<uint> nums, uint size) {
 
   for (uint i = 0; i < nums.size(); ++i) {
     queue.enqueue(nums[i]);
-
-    if (i == size - 1) {
-      // at this moment we need to start to yield max
+    // condition can be replaced with queue.size() == size
+    // in this case loop can be replaced with foreach
+    if (i >= size - 1) {
       maxs.push_back(queue.max());
-    } else if (i >= size) {
-      queue.dequeue();
-      maxs.push_back(queue.max());
+      queue.dequeue();     
     }
   }
 
